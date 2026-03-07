@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 
 #include <cstdlib>
@@ -9,7 +10,19 @@
 
 using namespace std;
 
-
+/**
+ * @brief Операции над матрицами на основе std::vector<std::vector<float>> . 
+ * На данный момент есть транспонирование (.T | .get_T()), сложение вычитание умножение (скалярное), вывод .print() и 
+ * заполнение .fill() нулевыми и fill_random() случайными значениями от 0 до 1
+ * 
+ * 
+ * @param lines число строк
+ * @param columns число столбцов
+ * 
+ * 
+ * 
+ * 
+ */
 class Matrix{
 private:
     int lines, columns;
@@ -18,6 +31,7 @@ private:
 
 
 public:
+    //!------------------------------------Base-----------------------------------------------------
     Matrix(int l, int c) : lines(l), columns(c) {
         matrix = std::vector<std::vector<float>>(lines, std::vector<float>(columns, 0));
     }
@@ -83,8 +97,13 @@ public:
         }
     }
 
-    //!---------------------------------------------------------------------------------------
+    //!---------------------------------------Действия в------------------------------------------------
 
+    /**
+     * @brief Транспонирование с созданием новой матрицы
+     * 
+     * 
+     */
     Matrix get_T() const{
         Matrix trans(columns, lines);
         for(int i = 0; i < lines; i++) {
@@ -95,34 +114,58 @@ public:
         return trans;
     }
 
+
+    /**
+     * @brief Транспонирование без создания новой
+     */
     void T() {
-        // Создаем новую матрицу с переставленными размерами
         Matrix new_matrix(columns, lines);
         
-        // Заполняем
         for(int i = 0; i < lines; i++) {
             for(int j = 0; j < columns; j++) {
                 new_matrix[j][i] = matrix[i][j];
             }
         }
         
-        // Заменяем
+
         matrix = new_matrix.matrix;
         
-        // Меняем размеры
         swap(lines, columns);
     }
 
 
+    /**
+     * @brief Нахождение минора без указанного i j
+     */
+    Matrix minor(int i=0, int j=0) {
+        if(lines < 3 or lines != columns) {
+            throw invalid_argument("Size");
+        }
+
+        Matrix small(lines-1, columns-1);
+
+        for (int i1 = 0, i2 = 0; i1 < lines; i1++) {
+            if (i1 == i) continue;  // пропускаем строку i
+        
+            for (int j1 = 0, j2 = 0; j1 < columns; j1++) {
+                if (j1 == j) continue;  // пропускаем столбец j
+            
+            small[i2][j2] = matrix[i1][j1];
+            j2++;
+            }
+        i2++;
+        }
+
+        return small;
+    }
+
+    //** Короч с детерминантом и обратной матрицей жуть, а нейрослоп добавлять не хочу, пока без них
 
 
 
 
 
-
-
-
-    //!---------------------------------------------------------------------------------------
+    //!------------------------------------------Действия вне---------------------------------------------
 
 
     void print() {
@@ -159,15 +202,6 @@ public:
     }
 };
 
-/*
-std::vector<std::vector<float>> matrix(int lines, int columns) {
-    
-    std::vector<std::vector<float>> mat(lines, std::vector<float>(columns, 0));
-
-    return mat;
-}
-*/
-
 int main() {
 
     Matrix mat1(3, 3);
@@ -177,12 +211,11 @@ int main() {
     mat2.fill_random();
 
     mat1.print();
-    mat2.print();
+    //mat2.print();
 
-    (mat1*mat2).print();
+    //(mat1*mat2).print();
 
-
-
+    mat1.minor().print();
 
     return 0;
 }
