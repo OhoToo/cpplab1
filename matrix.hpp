@@ -100,6 +100,41 @@ public:
         }
     }
 
+    /**
+     * @brief Умножение на числл
+     * @param num Число
+     */
+    Matrix operator*(float num) const {
+        
+        Matrix temporary(lines, columns);
+
+        for(int i = 0; i < lines; i++) {
+            for(int j = 0; j < columns; j++) {
+                temporary[i][j] = matrix[i][j]*num;
+            }
+        }
+
+        return temporary;
+    }
+
+    
+    Matrix elbyel(const Matrix& other) const {
+
+        if (lines != other.lines || columns != other.columns) {
+            throw invalid_argument("Size!");
+        }
+
+        Matrix temporary(lines, columns);
+
+        for(int i = 0; i < lines; i++) {
+            for(int j = 0; j < columns; j++) {
+                temporary[i][j] = matrix[i][j]*other.matrix[i][j];
+            }
+        }
+
+        return temporary;
+    }
+
     //!---------------------------------------Действия в------------------------------------------------
 
     /**
@@ -137,10 +172,11 @@ public:
     }
 
 
+    //* Нейрослоп... 
     /**
      * @brief Нахождение минора без указанного i j
      */
-    Matrix minor(int i=0, int j=0) {
+    Matrix minor(int i=0, int j=0) const {
         if(lines < 3 or lines != columns) {
             throw invalid_argument("Size");
         }
@@ -162,8 +198,20 @@ public:
         return small;
     }
 
-    //** Короч с детерминантом и обратной матрицей жуть, а нейрослоп добавлять не хочу, пока без них
+    //**Короч с детерминантом и обратной матрицей жуть, а нейрослоп добавлять не хочу, пока без них
 
+
+    Matrix map(const float func(float)) const {
+
+        Matrix newM(lines, columns);
+
+        for (int i = 0; i < lines; i++) {
+            for (int j = 0; j < columns; j++) {
+                newM[i][j] = func(matrix[i][j]);
+            }
+        }
+        return newM;
+    }
 
 
 
@@ -171,7 +219,7 @@ public:
     //!------------------------------------------Действия вне---------------------------------------------
 
 
-    void print() {
+    void print() const {
         for(const auto& line : matrix) {
             cout << "| ";
             for(const float& num : line) {
@@ -183,10 +231,9 @@ public:
     }
 
     void fill( const std::vector<float>& nums ) {
-        /*
         if(columns*lines != nums.size()) {
             throw invalid_argument("Size!");
-        }*/
+        }
         for(int i = 0; i < lines; i++){
             for(int j = 0; j < columns; j++) {
                 matrix[i][j] = nums[i*columns+j];
@@ -194,16 +241,40 @@ public:
         } 
     }
 
-    void fill_random() {
-
-        for(int i=0; i < lines; i++) {
-            for(int j=0; j < columns; j++) {
-                matrix[i][j] = (float)rand() / RAND_MAX; //todo Чёт кринж с этим (float) надо думать
+    void fill_random(float min = 0.0f, float max = 1.0f) {
+        for (int i = 0; i < lines; i++) {
+            for (int j = 0; j < columns; j++) {
+                float t = static_cast<float>(rand()) / RAND_MAX;
+                matrix[i][j] = min + t * (max - min);
             }
         }
-
     }
 };
+
+
+//!!!    Сигмоид - превращает любое число в число от 0 до 1 - пока здесь, вероятно надо будет переместить!
+
+float sigmoid(float num) {
+
+    float signum;
+
+    float e = 2.71828f;
+
+    signum = 1/(1 + pow(e, -1*num));
+
+    return signum;
+}
+
+float step(float num) {
+
+    if(num > 0) {
+        return 1.0f;
+    }
+    else {
+        return 0.0f;
+    }
+}
+
 
 // int main() {
 
