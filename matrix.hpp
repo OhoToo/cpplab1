@@ -172,9 +172,9 @@ public:
     }
 
 
-    //* Нейрослоп... 
+    //* Бесполезно, но пусть будет
     /**
-     * @brief Нахождение минора без указанного i j
+     * @brief Нахождение минора
      */
     Matrix minor(int i=0, int j=0) const {
         if(lines < 3 or lines != columns) {
@@ -184,10 +184,10 @@ public:
         Matrix small(lines-1, columns-1);
 
         for (int i1 = 0, i2 = 0; i1 < lines; i1++) {
-            if (i1 == i) continue;  // пропускаем строку i
+            if (i1 == i) continue;
         
             for (int j1 = 0, j2 = 0; j1 < columns; j1++) {
-                if (j1 == j) continue;  // пропускаем столбец j
+                if (j1 == j) continue;
             
             small[i2][j2] = matrix[i1][j1];
             j2++;
@@ -198,10 +198,15 @@ public:
         return small;
     }
 
-    //**Короч с детерминантом и обратной матрицей жуть, а нейрослоп добавлять не хочу, пока без них
+    //** Короч с детерминантом и обратной матрицей жуть, а нейрослоп добавлять не хочу, пока без них
+    //** А оказывается они и не нужны... наверное...
 
 
-    Matrix map(const float func(float)) const {
+    /** 
+     * @brief Аналог функции map из python
+     * @param func - функция на вход
+    */
+    Matrix map(float (*func)(float)) const {
 
         Matrix newM(lines, columns);
 
@@ -250,46 +255,3 @@ public:
         }
     }
 };
-
-
-//!!!    Сигмоид - превращает любое число в число от 0 до 1 - пока здесь, вероятно надо будет переместить!
-
-inline float sigmoid(float num) {
-
-    float signum;
-
-    float e = 2.71828f;
-
-    signum = 1/(1 + pow(e, -1*num));
-
-    return signum;
-}
-
-inline float step(float num) {
-
-    if(num > 0) {
-        return 1.0f;
-    }
-    else {
-        return 0.0f;
-    }
-}
-
-
-// int main() {
-
-//     Matrix mat1(3, 3);
-//     Matrix mat2(3, 5);
-
-//     mat1.fill_random();
-//     mat2.fill_random();
-
-//     mat1.print();
-//     //mat2.print();
-
-//     //(mat1*mat2).print();
-
-//     mat1.minor().print();
-
-//     return 0;
-// }
