@@ -254,7 +254,7 @@ public:
 
 //!!!    Сигмоид - превращает любое число в число от 0 до 1 - пока здесь, вероятно надо будет переместить!
 
-float sigmoid(float num) {
+inline float sigmoid(float num) {
 
     float signum;
 
@@ -265,7 +265,7 @@ float sigmoid(float num) {
     return signum;
 }
 
-float step(float num) {
+inline float step(float num) {
 
     if(num > 0) {
         return 1.0f;
