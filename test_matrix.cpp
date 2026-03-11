@@ -7,8 +7,6 @@ bool approx_equal(float a, float b, float eps = 1e-5) {
     return std::fabs(a - b) < eps;
 }
 
-
-
 void test_creation() {
     std::cout << "Matrix Creation Test...";
     Matrix m(3, 2);
@@ -39,13 +37,12 @@ void test_addition() {
         Matrix E = A + D;
         assert(false && "The exception was not thrown");
     } catch (const std::invalid_argument&) {
-        // OK, исключение поймано
     }
     std::cout << " OK\n";
 }
 
 void test_subtraction() {
-    std::cout << "Тест вычитания...";
+    std::cout << "The subtraction test...";
     Matrix A(2, 2);
     A.fill({5, 6, 7, 8});
     Matrix B(2, 2);
