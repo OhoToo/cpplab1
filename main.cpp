@@ -1,10 +1,12 @@
     #include "matrix.hpp"
+    #include "linearfunc.hpp"
+    #include "point.hpp"
     #include <iostream>
 
 
     int main() {
 
-
+        
         
         Matrix mat(5, 5);
         Matrix mat1(5,5);
