@@ -7,9 +7,7 @@ bool approx_equal(float a, float b, float eps = 1e-5) {
     return std::fabs(a - b) < eps;
 }
 
-const float sigmoid_const(float x) {
-    return sigmoid(x);
-}
+
 
 void test_creation() {
     std::cout << "Тест создания матрицы...";
@@ -184,7 +182,11 @@ void test_map() {
     Matrix A(1, 2);
     A.fill({0.0f, 1.0f});
 
-    Matrix B = A.map(sigmoid_const);   // ← исправлено
+    // Используем лямбда-выражение вместо отдельной функции
+    Matrix B = A.map([](float x) -> float {
+        return 1.0f / (1.0f + std::exp(-x));
+    });
+
     assert(approx_equal(B[0][0], 0.5f, 1e-4));
     assert(approx_equal(B[0][1], 1.0f / (1.0f + std::exp(-1.0f)), 1e-4));
 
