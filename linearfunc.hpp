@@ -36,6 +36,11 @@ inline float linear(float x, float y, float w1, float w2, float b) {
 
 /**
  * @brief Функция предсказания
+ * @param x - х
+ * @param y - y
+ * @param w1 - веса для x
+ * @param w2 - веса для y
+ * @param b - b.
  */
 inline float predict(float x, float y, float w1, float w2, float b) {
     return step(linear(x, y, w1, w2, b));
