@@ -10,7 +10,7 @@ bool approx_equal(float a, float b, float eps = 1e-5) {
 
 
 void test_creation() {
-    std::cout << "Тест создания матрицы...";
+    std::cout << "Matrix Creation Test...";
     Matrix m(3, 2);
     m.fill({1, 2, 3, 4, 5, 6});
     assert(approx_equal(m[0][0], 1));
@@ -23,7 +23,7 @@ void test_creation() {
 }
 
 void test_addition() {
-    std::cout << "Тест сложения...";
+    std::cout << "Addition test...";
     Matrix A(2, 2);
     A.fill({1, 2, 3, 4});
     Matrix B(2, 2);
@@ -37,7 +37,7 @@ void test_addition() {
     try {
         Matrix D(2, 3);
         Matrix E = A + D;
-        assert(false && "Исключение не было выброшено");
+        assert(false && "The exception was not thrown");
     } catch (const std::invalid_argument&) {
         // OK, исключение поймано
     }
@@ -59,7 +59,7 @@ void test_subtraction() {
 }
 
 void test_multiplication_matrix() {
-    std::cout << "Тест умножения матриц...\n";
+    std::cout << "Matrix Multiplication Test...\n";
 
     Matrix A(2, 2);
     A.fill({1, 2, 3, 4});
@@ -70,7 +70,7 @@ void test_multiplication_matrix() {
     assert(approx_equal(C[0][1], 4));
     assert(approx_equal(C[1][0], 10));
     assert(approx_equal(C[1][1], 8));
-    std::cout << "  Квадратные 2x2: OK\n";
+    std::cout << "  Square 2x2: OK\n";
 
     Matrix D(2, 3);
     D.fill({1, 2, 3, 4, 5, 6});
@@ -81,7 +81,7 @@ void test_multiplication_matrix() {
     assert(approx_equal(F[0][1], 64));
     assert(approx_equal(F[1][0], 139));
     assert(approx_equal(F[1][1], 154));
-    std::cout << "  Прямоугольные 2x3 * 3x2: OK\n";
+    std::cout << "  Rectangular 2x3 * 3x2: OK\n";
 
     Matrix I(3, 3);
     I.fill({1, 0, 0, 0, 1, 0, 0, 0, 1});
@@ -91,7 +91,7 @@ void test_multiplication_matrix() {
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
             assert(approx_equal(M[i][j], M2[i][j]));
-    std::cout << "  Умножение на единичную: OK\n";
+    std::cout << "  Multiplication by a unit: OK\n";
 
     Matrix Z(3, 3);
     Z.fill({0, 0, 0, 0, 0, 0, 0, 0, 0});
@@ -99,20 +99,20 @@ void test_multiplication_matrix() {
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
             assert(approx_equal(M3[i][j], 0.0f));
-    std::cout << "  Умножение на нулевую: OK\n";
+    std::cout << "  Multiplication by zero: OK\n";
 
     try {
         Matrix X(2, 3);
         Matrix Y(2, 2);
         Matrix Z2 = X * Y;
-        assert(false && "Исключение не выброшено");
+        assert(false && "The exception is not thrown");
     } catch (const std::invalid_argument&) {
-        std::cout << "  Несовместимые размеры: OK (исключение)\n";
+        std::cout << "  Incompatible sizes: OK (exception)\n";
     }
 }
 
 void test_scalar_multiplication() {
-    std::cout << "Тест умножения на скаляр...";
+    std::cout << "Scalar Multiplication Test...";
     Matrix A(2, 2);
     A.fill({1, 2, 3, 4});
     Matrix B = A * 2.5f;
@@ -124,7 +124,7 @@ void test_scalar_multiplication() {
 }
 
 void test_elementwise_multiplication() {
-    std::cout << "Тест поэлементного умножения (elbyel)...";
+    std::cout << "The element-wise multiplication test (elbyel)...";
     Matrix A(2, 2);
     A.fill({1, 2, 3, 4});
     Matrix B(2, 2);
@@ -138,7 +138,7 @@ void test_elementwise_multiplication() {
 }
 
 void test_transpose() {
-    std::cout << "Тест транспонирования...";
+    std::cout << "The transposition test...";
     Matrix A(2, 3);
     A.fill({1, 2, 3, 4, 5, 6});
     Matrix B = A.get_T();
@@ -160,7 +160,7 @@ void test_transpose() {
 }
 
 void test_minor() {
-    std::cout << "Тест минора...";
+    std::cout << "The Minor Test...";
     Matrix A(3, 3);
     A.fill({1, 2, 3, 4, 5, 6, 7, 8, 9});
     Matrix M = A.minor(0, 0);
@@ -178,7 +178,7 @@ void test_minor() {
 }
 
 void test_map() {
-    std::cout << "Тест map с сигмоидой...";
+    std::cout << "The sigmoid map test...";
     Matrix A(1, 2);
     A.fill({0.0f, 1.0f});
 
@@ -194,7 +194,7 @@ void test_map() {
 }
 
 void test_fill_random() {
-    std::cout << "Тест fill_random (проверка диапазона)...";
+    std::cout << "fill_random test (range check)...";
     Matrix A(10, 10);
     A.fill_random(2.0f, 5.0f);
     for (int i = 0; i < 10; ++i) {
@@ -207,7 +207,7 @@ void test_fill_random() {
 }
 
 int main() {
-    std::cout << "Запуск тестов для matrix.hpp\n";
+    std::cout << "Running tests for matrix.hpp\n";
     test_creation();
     test_addition();
     test_subtraction();
@@ -218,6 +218,6 @@ int main() {
     test_minor();
     test_map();
     test_fill_random();
-    std::cout << "Все тесты пройдены успешно!\n";
+    std::cout << "All tests passed successfully!\n";
     return 0;
 }
