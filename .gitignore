@@ -2,6 +2,7 @@ matrix.exe
 main.exe
 matrix.cpp
 test_matrix.exe
+data_create.exe
 
 CMakeLists.txt
 cmake-build-debug

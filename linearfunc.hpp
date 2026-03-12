@@ -6,11 +6,11 @@
 
 //!-----------------------------------Просто полезные функции-----------------------------------
 
-inline float sigmoid(float num) {
+float sigmoid(float num) {
     return 1.0f / (1.0f + std::exp(-num));
 }
 
-inline float step(float num) {
+float step(float num) {
 
     if(num > 0) {
         return 1.0f;
@@ -30,7 +30,7 @@ inline float step(float num) {
  * @param w2 - веса для y
  * @param b - b. Вы что, не знаете что такое лин. функция?)
  */
-inline float linear(float x, float y, float w1, float w2, float b) {
+float linear(float x, float y, float w1, float w2, float b) {
     return w1 * x + w2 * y + b;
 }
 
@@ -42,6 +42,6 @@ inline float linear(float x, float y, float w1, float w2, float b) {
  * @param w2 - веса для y
  * @param b - b.
  */
-inline float predict(float x, float y, float w1, float w2, float b) {
+float predict(float x, float y, float w1, float w2, float b) {
     return step(linear(x, y, w1, w2, b));
 }
