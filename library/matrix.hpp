@@ -30,8 +30,6 @@ class Matrix{
 private:
     int lines, columns;
     std::vector<std::vector<float>> matrix;
-    
-
 
 public:
     //!------------------------------------Base-----------------------------------------------------
@@ -254,4 +252,36 @@ public:
             }
         }
     }
+
+    // Для просмотра просмотра размера
+    int getLines() const { return lines; }
+    int getCols() const { return columns; }
+
+
+    void addBias(const Matrix& bias) {
+        // Проверяем, что bias - столбец и имеет подходящий размер
+        if (bias.getCols() != 1 || bias.getLines() != lines) {
+            throw std::invalid_argument("addBias: bias must be a column vector with same number of rows");
+        }
+        for (int i = 0; i < lines; ++i) {
+            float bval = bias[i][0];        // значение смещения для i-й строки
+            for (int j = 0; j < columns; ++j) {
+                matrix[i][j] += bval;        // прибавляем к каждому столбцу
+            }
+        }
+    }
+
+    Matrix sumRows() const {
+        Matrix result(lines, 1);   // создаём матрицу-столбец
+        for (int i = 0; i < lines; ++i) {
+            float s = 0;
+            for (int j = 0; j < columns; ++j) {
+                s += matrix[i][j];
+            }
+            result[i][0] = s;
+        }
+        return result;
+    }
+
+
 };
