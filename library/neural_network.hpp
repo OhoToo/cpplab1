@@ -1,6 +1,9 @@
 #ifndef NEURAL_NETWORK_HPP
 #define NEURAL_NETWORK_HPP
 
+#include <iostream>    // для std::cout
+#include <algorithm>   // для std::shuffle
+#include <random>      // для генераторов
 #include <vector>
 #include <cmath>
 #include "layer.hpp"
@@ -116,7 +119,7 @@ void NeuralNetwork::train(const Matrix& X_train, const Matrix& Y_train,
         // Перемешивание: создаём индексы и перемешиваем
         std::vector<int> indices(m);
         for (int i = 0; i < m; ++i) indices[i] = i;
-        std::random_shuffle(indices.begin(), indices.end());
+        std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device{}()));
 
         float total_loss = 0.0f;
         int num_batches = 0;
@@ -167,3 +170,4 @@ void NeuralNetwork::train(const Matrix& X_train, const Matrix& Y_train,
     }
 }
 
+    

@@ -101,7 +101,7 @@ std::tuple<std::vector<Point>, Line> create_data(int amount = 40, float range_ =
 
 
 
-
+/*
 //! Пока что просто вывод 
 int main() {
     srand(time(0));
@@ -120,3 +120,4 @@ int main() {
 
     return 0;
 }
+*/

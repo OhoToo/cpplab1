@@ -283,5 +283,11 @@ public:
         return result;
     }
 
+    Matrix() : lines(0), columns(0) {}
+
+    // Константная версия operator[] для доступа к элементам const-объектов
+    const std::vector<float>& operator[](int i) const {
+        return matrix[i];
+    }
 
 };
