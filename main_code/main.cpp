@@ -266,5 +266,7 @@ int main() {
     // 9. Интерактивный режим
     interactiveMode(nn, mean_x, std_x, mean_y, std_y);
 
+    nn.saveModel("my_model.bin", mean_x, std_x, mean_y, std_y);
+    std::cout << "Model saved to my_model.bin" << std::endl;
     return 0;
 }

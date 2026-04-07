@@ -8,6 +8,11 @@
 #include <cmath>
 #include "layer.hpp"
 #include "matrix.hpp"
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <random>
+
 
 class NeuralNetwork {
 private:
@@ -40,6 +45,59 @@ public:
 
     // Вычисление бинарной кросс-энтропии
     float binary_cross_entropy(const Matrix& Y_pred, const Matrix& Y_true);
+
+    void saveModel(const std::string& filename,
+               float mean_x, float std_x,
+               float mean_y, float std_y) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) throw std::runtime_error("Cannot open file for writing: " + filename);
+
+        // Пишем параметры нормализации
+        out.write(reinterpret_cast<const char*>(&mean_x), sizeof(mean_x));
+        out.write(reinterpret_cast<const char*>(&std_x), sizeof(std_x));
+        out.write(reinterpret_cast<const char*>(&mean_y), sizeof(mean_y));
+        out.write(reinterpret_cast<const char*>(&std_y), sizeof(std_y));
+
+        // Пишем количество слоёв
+        size_t num_layers = layers.size();
+        out.write(reinterpret_cast<const char*>(&num_layers), sizeof(num_layers));
+
+        // Пишем каждый слой
+        for (const auto& layer : layers) {
+            layer.save(out);
+        }
+        out.close();
+    }
+
+    // Загрузить модель из файла (предполагается, что архитектура уже создана)
+    void loadModel(const std::string& filename,
+               float& mean_x, float& std_x,
+               float& mean_y, float& std_y) {
+        std::ifstream in(filename, std::ios::binary);
+        if (!in) throw std::runtime_error("Cannot open file for reading: " + filename);
+
+        // Читаем параметры нормализации
+        in.read(reinterpret_cast<char*>(&mean_x), sizeof(mean_x));
+        in.read(reinterpret_cast<char*>(&std_x), sizeof(std_x));
+        in.read(reinterpret_cast<char*>(&mean_y), sizeof(mean_y));
+        in.read(reinterpret_cast<char*>(&std_y), sizeof(std_y));
+
+        // Читаем количество слоёв
+        size_t num_layers;
+        in.read(reinterpret_cast<char*>(&num_layers), sizeof(num_layers));
+        if (num_layers != layers.size()) {
+            throw std::runtime_error("Layer count mismatch: saved " +
+                                     std::to_string(num_layers) +
+                                     " but current has " +
+                                     std::to_string(layers.size()));
+        }
+
+        // Читаем каждый слой
+        for (auto& layer : layers) {
+            layer.load(in);
+        }
+        in.close();
+    }
 };
 
 #endif
