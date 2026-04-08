@@ -50,11 +50,7 @@ float randnum(const std::vector<float>& range, bool with_zero = true) {
 
 
 
-/**
- * 
- * @param amount Количество точек
- * @param range Диапазон появления точек
- */
+
 std::tuple<std::vector<Point>, Line> create_data(int amount = 40, float range_ = 10.0f) {
 
 

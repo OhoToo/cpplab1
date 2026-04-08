@@ -13,26 +13,12 @@
 
 using namespace std;
 
-/**
- * @brief Операции над матрицами на основе std::vector<std::vector<float>> . 
- * На данный момент есть транспонирование (.T | .get_T()), сложение вычитание умножение (скалярное), вывод .print() и 
- * заполнение .fill() нулевыми и fill_random() случайными значениями от 0 до 1
- * 
- * 
- * @param lines число строк
- * @param columns число столбцов
- * 
- * 
- * 
- * 
- */
 class Matrix{
 private:
     int lines, columns;
     std::vector<std::vector<float>> matrix;
 
 public:
-    //!------------------------------------Base-----------------------------------------------------
     Matrix(int l, int c) : lines(l), columns(c) {
         matrix = std::vector<std::vector<float>>(lines, std::vector<float>(columns, 0));
     }
@@ -45,7 +31,7 @@ public:
 
     Matrix operator+(const Matrix& other) const {
         if((matrix.size() != other.matrix.size()) or (matrix[0].size() != other.matrix[0].size())) {
-            throw invalid_argument("Size!");
+            throw invalid_argument("Size");
         }
 
         Matrix final(matrix.size(), matrix[0].size());
@@ -62,7 +48,7 @@ public:
 
     Matrix operator-(const Matrix& other) const {
         if((matrix.size() != other.matrix.size()) or (matrix[0].size() != other.matrix[0].size())) {
-            throw invalid_argument("Size!");
+            throw invalid_argument("Size");
         }
 
         Matrix final(matrix.size(), matrix[0].size());
@@ -98,10 +84,7 @@ public:
         }
     }
 
-    /**
-     * @brief Умножение на числл
-     * @param num Число
-     */
+
     Matrix operator*(float num) const {
         
         Matrix temporary(lines, columns);
@@ -133,13 +116,7 @@ public:
         return temporary;
     }
 
-    //!---------------------------------------Действия в------------------------------------------------
 
-    /**
-     * @brief Транспонирование с созданием новой матрицы
-     * 
-     * 
-     */
     Matrix get_T() const{
         Matrix trans(columns, lines);
         for(int i = 0; i < lines; i++) {
@@ -151,9 +128,6 @@ public:
     }
 
 
-    /**
-     * @brief Транспонирование без создания новой
-     */
     void T() {
         Matrix new_matrix(columns, lines);
         
@@ -170,10 +144,6 @@ public:
     }
 
 
-    //* Бесполезно, но пусть будет
-    /**
-     * @brief Нахождение минора
-     */
     Matrix minor(int i=0, int j=0) const {
         if(lines < 3 or lines != columns) {
             throw invalid_argument("Size");
@@ -196,14 +166,7 @@ public:
         return small;
     }
 
-    //** Короч с детерминантом и обратной матрицей жуть, а нейрослоп добавлять не хочу, пока без них
-    //** А оказывается они и не нужны... наверное...
 
-
-    /** 
-     * @brief Аналог функции map из python
-     * @param func - функция на вход
-    */
     Matrix map(float (*func)(float)) const {
 
         Matrix newM(lines, columns);
@@ -216,10 +179,6 @@ public:
         return newM;
     }
 
-
-
-
-    //!------------------------------------------Действия вне---------------------------------------------
 
 
     void print() const {
@@ -253,26 +212,26 @@ public:
         }
     }
 
-    // Для просмотра просмотра размера
+
     int getLines() const { return lines; }
     int getCols() const { return columns; }
 
 
     void addBias(const Matrix& bias) {
-        // Проверяем, что bias - столбец и имеет подходящий размер
+
         if (bias.getCols() != 1 || bias.getLines() != lines) {
             throw std::invalid_argument("addBias: bias must be a column vector with same number of rows");
         }
         for (int i = 0; i < lines; ++i) {
-            float bval = bias[i][0];        // значение смещения для i-й строки
+            float bval = bias[i][0];
             for (int j = 0; j < columns; ++j) {
-                matrix[i][j] += bval;        // прибавляем к каждому столбцу
+                matrix[i][j] += bval;
             }
         }
     }
 
     Matrix sumRows() const {
-        Matrix result(lines, 1);   // создаём матрицу-столбец
+        Matrix result(lines, 1);
         for (int i = 0; i < lines; ++i) {
             float s = 0;
             for (int j = 0; j < columns; ++j) {
@@ -285,7 +244,6 @@ public:
 
     Matrix() : lines(0), columns(0) {}
 
-    // Константная версия operator[] для доступа к элементам const-объектов
     const std::vector<float>& operator[](int i) const {
         return matrix[i];
     }

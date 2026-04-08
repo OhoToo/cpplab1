@@ -1,9 +1,9 @@
 #ifndef NEURAL_NETWORK_HPP
 #define NEURAL_NETWORK_HPP
 
-#include <iostream>    // для std::cout
-#include <algorithm>   // для std::shuffle
-#include <random>      // для генераторов
+#include <iostream>
+#include <algorithm>
+#include <random>
 #include <vector>
 #include <cmath>
 #include "layer.hpp"
@@ -16,34 +16,30 @@
 
 class NeuralNetwork {
 private:
-    std::vector<Layer> layers;   // слои сети
-    std::vector<Matrix> layer_inputs;  // входы каждого слоя (A_prev)
-    std::vector<Matrix> layer_outputs; // выходы каждого слоя (A)
+    std::vector<Layer> layers;
+    std::vector<Matrix> layer_inputs;
+    std::vector<Matrix> layer_outputs;
 
 public:
-    // Конструктор: принимает список размеров слоёв и список функций активации
-    // Пример: sizes = {2, 4, 1}  (2 входа, 4 скрытых, 1 выход)
-    // activations = {relu, sigmoid}, derivs = {relu_deriv, sigmoid_deriv_from_z}
     NeuralNetwork(const std::vector<int>& sizes,
                   const std::vector<float(*)(float)>& activations,
                   const std::vector<float(*)(float)>& derivs);
 
-    // Прямой проход: X - вход (признаки × примеры), возвращает выход сети (1 × примеры)
+
     Matrix forward(const Matrix& X);
 
-    // Обратный проход: Y - истинные метки (1 × примеры), lr - скорость обучения
-    // Вычисляет градиенты и обновляет веса
+
     void backward(const Matrix& Y, float learning_rate);
 
-    // Обучение на эпохах
+
     void train(const Matrix& X_train, const Matrix& Y_train,
                int epochs, float learning_rate, int batch_size = 1,
                const Matrix& X_test = Matrix(0,0), const Matrix& Y_test = Matrix(0,0));
 
-    // Предсказание классов (0 или 1) после порога 0.5
+
     Matrix predict(const Matrix& X);
 
-    // Вычисление бинарной кросс-энтропии
+
     float binary_cross_entropy(const Matrix& Y_pred, const Matrix& Y_true);
 
     void saveModel(const std::string& filename,
@@ -52,37 +48,36 @@ public:
         std::ofstream out(filename, std::ios::binary);
         if (!out) throw std::runtime_error("Cannot open file for writing: " + filename);
 
-        // Пишем параметры нормализации
+
         out.write(reinterpret_cast<const char*>(&mean_x), sizeof(mean_x));
         out.write(reinterpret_cast<const char*>(&std_x), sizeof(std_x));
         out.write(reinterpret_cast<const char*>(&mean_y), sizeof(mean_y));
         out.write(reinterpret_cast<const char*>(&std_y), sizeof(std_y));
 
-        // Пишем количество слоёв
+
         size_t num_layers = layers.size();
         out.write(reinterpret_cast<const char*>(&num_layers), sizeof(num_layers));
 
-        // Пишем каждый слой
+
         for (const auto& layer : layers) {
             layer.save(out);
         }
         out.close();
     }
 
-    // Загрузить модель из файла (предполагается, что архитектура уже создана)
+
     void loadModel(const std::string& filename,
                float& mean_x, float& std_x,
                float& mean_y, float& std_y) {
         std::ifstream in(filename, std::ios::binary);
         if (!in) throw std::runtime_error("Cannot open file for reading: " + filename);
 
-        // Читаем параметры нормализации
+
         in.read(reinterpret_cast<char*>(&mean_x), sizeof(mean_x));
         in.read(reinterpret_cast<char*>(&std_x), sizeof(std_x));
         in.read(reinterpret_cast<char*>(&mean_y), sizeof(mean_y));
         in.read(reinterpret_cast<char*>(&std_y), sizeof(std_y));
 
-        // Читаем количество слоёв
         size_t num_layers;
         in.read(reinterpret_cast<char*>(&num_layers), sizeof(num_layers));
         if (num_layers != layers.size()) {
@@ -92,7 +87,6 @@ public:
                                      std::to_string(layers.size()));
         }
 
-        // Читаем каждый слой
         for (auto& layer : layers) {
             layer.load(in);
         }
@@ -133,8 +127,7 @@ Matrix NeuralNetwork::forward(const Matrix& X) {
 
 void NeuralNetwork::backward(const Matrix& Y, float learning_rate) {
     int m = Y.getCols();
-    // Начинаем с последнего слоя
-    Matrix dA = layer_outputs.back() - Y;  // dA для последнего слоя
+    Matrix dA = layer_outputs.back() - Y;
     for (int i = layers.size() - 1; i >= 0; --i) {
         // Вход для этого слоя — layer_inputs[i]
         dA = layers[i].backward(layer_inputs[i], dA, learning_rate);
@@ -144,7 +137,6 @@ void NeuralNetwork::backward(const Matrix& Y, float learning_rate) {
 
 Matrix NeuralNetwork::predict(const Matrix& X) {
     Matrix probs = forward(X);
-    // Применяем порог 0.5: если элемент > 0.5, то 1, иначе 0
     for (int i = 0; i < probs.getLines(); ++i) {
         for (int j = 0; j < probs.getCols(); ++j) {
             probs[i][j] = (probs[i][j] > 0.5f) ? 1.0f : 0.0f;
@@ -160,7 +152,6 @@ float NeuralNetwork::binary_cross_entropy(const Matrix& Y_pred, const Matrix& Y_
     for (int j = 0; j < m; ++j) {
         float y = Y_true[0][j];
         float y_hat = Y_pred[0][j];
-        // Добавляем маленькое число (1e-8) чтобы избежать log(0)
         loss -= y * std::log(y_hat + 1e-8f) + (1 - y) * std::log(1 - y_hat + 1e-8f);
     }
     return loss / m;
@@ -174,7 +165,6 @@ void NeuralNetwork::train(const Matrix& X_train, const Matrix& Y_train,
     if (batch_size <= 0) batch_size = m;
 
     for (int epoch = 0; epoch < epochs; ++epoch) {
-        // Перемешивание: создаём индексы и перемешиваем
         std::vector<int> indices(m);
         for (int i = 0; i < m; ++i) indices[i] = i;
         std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device{}()));
@@ -186,7 +176,6 @@ void NeuralNetwork::train(const Matrix& X_train, const Matrix& Y_train,
             int end = std::min(start + batch_size, m);
             int batch_m = end - start;
 
-            // Формируем батч X_batch и Y_batch
             Matrix X_batch(X_train.getLines(), batch_m);
             Matrix Y_batch(1, batch_m);
             for (int j = 0; j < batch_m; ++j) {
@@ -197,26 +186,25 @@ void NeuralNetwork::train(const Matrix& X_train, const Matrix& Y_train,
                 Y_batch[0][j] = Y_train[0][idx];
             }
 
-            // Прямой проход
+
             Matrix Y_pred = forward(X_batch);
-            // Вычисляем loss для батча (для информации)
+
             float batch_loss = binary_cross_entropy(Y_pred, Y_batch);
             total_loss += batch_loss * batch_m;
             num_batches++;
 
-            // Обратный проход
+
             backward(Y_batch, learning_rate);
         }
 
         float avg_loss = total_loss / m;
         std::cout << "Epoch " << epoch+1 << "/" << epochs << " - loss: " << avg_loss;
 
-        // Если переданы тестовые данные, оцениваем точность
+
         if (X_test.getLines() > 0 && Y_test.getLines() > 0) {
             Matrix Y_pred_test = forward(X_test);
             float test_loss = binary_cross_entropy(Y_pred_test, Y_test);
             Matrix Y_test_classes = predict(X_test);
-            // Вычисляем accuracy
             int correct = 0;
             for (int j = 0; j < Y_test.getCols(); ++j) {
                 if (Y_test_classes[0][j] == Y_test[0][j]) correct++;
