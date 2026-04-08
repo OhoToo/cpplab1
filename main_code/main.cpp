@@ -143,25 +143,16 @@ void visualizeDecisionSurface(NeuralNetwork& nn,
     normalize(X_grid, mean0, std0, mean1, std1);
 
 
-    Matrix probs = nn.forward(X_grid); // (1 x total)
+    Matrix probs = nn.forward(X_grid);
 
 
-    std::cout << "\n===== Decision Surface ('.' = class 0, '#' = class 1) =====" << std::endl;
-    idx = 0;
-    for (int iy = 0; iy < ny; ++iy) {
-        for (int ix = 0; ix < nx; ++ix) {
-            float p = probs[0][idx++];
-            std::cout << (p > 0.5f ? '#' : '.');
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "==========================================================" << std::endl;
+
 }
 
 
 void interactiveMode(NeuralNetwork& nn,
                      float mean0, float std0, float mean1, float std1) {
-    std::cout << "\n===== Interactive Mode =====" << std::endl;
+    std::cout << "\nInteractive Mode" << std::endl;
     std::cout << "Enter x y (or 'q' to quit):" << std::endl;
     float x, y;
     while (true) {
